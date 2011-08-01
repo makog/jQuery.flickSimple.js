@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+<meta name="format-detection" content="telephone=no">
+<title>jQuery.flickSimple.js</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="robots" content="noindex">
+
+<meta http-equiv="Content-Style-Type" content="text/css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.flicksimple.js"></script>
+<style type="text/css">
+body {
+	font-size: 80%;
+	margin: 2em;
+	padding: 0;
+	background-color: #fff;
+}
+
+@media screen and (max-device-width: 480px) {
+
+	body {
+		margin: 0;
+		padding: 0;
+	}
+
+	h1, h2, h3, h4, p {
+		margin-left: 8px;
+		margin-right: 8px;
+	}
+}
+
+h2 {
+	margin: 2em 0 0.5em 0;
+	padding: 0.3em;
+	border-bottom: solid 1px #ccc;
+	background-color: #eee;
+}
+
+h3 {
+	padding: 0.3em 0;
+	border-bottom: solid 1px #ccc;
+}
+
+dl {
+	margin: 1em 1em;
+}
+
+dl dt {
+	font-weight: bold;
+	margin-top: 1em;
+}
+
+dl dd {
+	margin-left: 2em;
+}
+
+pre {
+	padding: 0 1em;
+	margin: 1em;
+	overflow: auto;
+	border: solid 1px #ccc;
+	background-color: #f9f9f9;
+}
+
+#footer {
+	margin: 2em 0 0.5em 0;
+	border-top: 1px solid #ccc;
+}
+
+/* ----------------------------- */
+
+.flickSimple {
+	width: 320px;
+	position: relative;
+	overflow: auto;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	background-color: #eee;
+}
+
+.flickSimple.landscape {
+	width: 480px;
+}
+
+.flickSimple ul {
+	display: block;
+	margin: 0;
+	padding: 0;
+}
+
+.flickSimple ul.landscape {
+}
+
+.flickSimple ul li {
+	float: left;
+	list-style-type: none;
+	
+	text-align: center;
+}
+
+.flickSimple ul li.landscape {
+}
+
+#basic ul,
+#basic ul.landscape {
+	width: 1920px;
+}
+
+#basic ul li,
+#basic ul li.landscape {
+	width: 80px
+}
+
+#firstitem ul {
+	width: 1920px;
+}
+#firstitem ul.landscape {
+	width: 2880px;
+}
+
+#firstitem ul li {
+	width: 160px;
+}
+
+#firstitem ul li.landscape {
+	width: 240px;
+}
+
+#nosnap ul,
+#nosnap ul.landscape {
+	width: 1920px;
+}
+
+#nosnap ul li,
+#nosnap ul li.landscape {
+	width: 160px
+}
+
+#flickable1,
+#flickable1.landscape {
+	width: 100%;
+	padding: 16px 0;
+}
+
+#flickable1 ul.landscape,
+#flickable1 ul {
+	width: 400%;
+}
+
+#flickable1 ul li {
+	width: 5%;
+}
+
+#basic ul li a,
+#firstitem ul li a,
+#nosnap ul li a {
+	display: block;
+	height: 80px;
+	margin: 5px;
+	border: solid 1px #ccc;
+	background-color: #fff;
+	line-height: 80px;
+}
+
+.flickableControl {
+	overflow: hidden;
+}
+
+#flickableNavi {
+	text-align: center;
+}
+
+.nextbtn {
+	display: block;
+	float: right;
+	text-align: right;
+}
+
+.backbtn {
+	display: block;
+	float: left;
+}
+.nextbtn.inactive,
+.backbtn.inactive {
+	opacity : 0.3;
+}
+
+.indicator {
+	position: relative;
+	overflow: hidden;
+	width: 13px;
+	height: 5px;
+	background: url(./sample/images/indicater_bg.png) repeat-x left top;
+	margin: 10px auto 0 auto;
+}
+
+.indicator img {
+	position: absolute;
+	left: 0;
+	top: 0;
+	margin: 0;
+}
+
+</style>
+</head>
+<body>
+
+<h1>jQuery.flickSimple.js</h1>
+
+<h2>Demos</h2>
+
+<h3>Basic</h3>
+<div id="basic" class="flickSimple">
+<ul>
+<li><a href="#1" target="abc">1</a></li>
+<li><a href="#2" target="abc">2</a></li>
+<li><a href="#3" target="abc">3</a></li>
+<li><a href="#4" target="abc">4</a></li>
+<li><a href="#5" target="abc">5</a></li>
+<li><a href="#6" target="abc">6</a></li>
+<li><a href="#7" target="abc">7</a></li>
+<li><a href="#8" target="abc">8</a></li>
+<li><a href="#9" target="abc">9</a></li>
+<li><a href="#10" target="abc">10</a></li>
+<li><a href="#11" target="abc">11</a></li>
+<li><a href="#12" target="abc">12</a></li>
+<li><a href="#13" target="abc">13</a></li>
+<li><a href="#14" target="abc">14</a></li>
+<li><a href="#15" target="abc">15</a></li>
+<li><a href="#16" target="abc">16</a></li>
+<li><a href="#17" target="abc">17</a></li>
+<li><a href="#18" target="abc">18</a></li>
+<li><a href="#19" target="abc">19</a></li>
+<li><a href="#20" target="abc">20</a></li>
+<li><a href="#21" target="abc">21</a></li>
+<li><a href="#22" target="abc">22</a></li>
+<li><a href="#23" target="abc">23</a></li>
+<li><a href="#24" target="abc">24</a></li>
+</ul>
+</div>
+<script type="text/javascript">
+	$('#basic').flickSimple({});
+</script>
+
+<h3>Snap first item width</h3>
+<div id="firstitem" class="flickSimple">
+<ul>
+<li><a href="#1" target="_blank">1</a></li>
+<li><a href="#2" target="_blank">2</a></li>
+<li><a href="#3" target="_blank">3</a></li>
+<li><a href="#4" target="_blank">4</a></li>
+<li><a href="#5" target="_blank">5</a></li>
+<li><a href="#6" target="_blank">6</a></li>
+<li><a href="#7" target="_blank">7</a></li>
+<li><a href="#8" target="_blank">8</a></li>
+<li><a href="#9" target="_blank">9</a></li>
+<li><a href="#10" target="_blank">10</a></li>
+<li><a href="#11" target="_blank">11</a></li>
+<li><a href="#12" target="_blank">12</a></li>
+</ul>
+</div>
+<script type="text/javascript">
+
+	$('#firstitem').flickSimple({
+		snap: "first"
+	});
+
+</script>
+
+<h3>No snap</h3>
+<div id="nosnap" class="flickSimple">
+<ul>
+<li><a href="#1">1</a></li>
+<li><a href="#2">2</a></li>
+<li><a href="#3">3</a></li>
+<li><a href="#4">4</a></li>
+<li><a href="#5">5</a></li>
+<li><a href="#6">6</a></li>
+<li><a href="#7">7</a></li>
+<li><a href="#8">8</a></li>
+<li><a href="#9">9</a></li>
+<li><a href="#10">10</a></li>
+<li><a href="#11">11</a></li>
+<li><a href="#12">12</a></li>
+</ul>
+</div>
+<script type="text/javascript">
+	$('#nosnap').flickSimple({
+		snap: ''
+	});
+</script>
+
+<h3>with indicator, controllers and animation.</h3>
+<div id="flickable1" class="flickSimple">
+<ul id="fl1">
+<li><a href="#1"><img src="sample/images/1.png" width="48" height="48" alt=""></a></li>
+<li><a href="#2"><img src="sample/images/2.png" width="48" height="48" alt=""></a></li>
+<li><a href="#3"><img src="sample/images/3.png" width="48" height="48" alt=""></a></li>
+<li><a href="#4"><img src="sample/images/4.png" width="48" height="48" alt=""></a></li>
+<li><a href="#5"><img src="sample/images/5.png" width="48" height="48" alt=""></a></li>
+<li><a href="#6"><img src="sample/images/6.png" width="48" height="48" alt=""></a></li>
+<li><a href="#7"><img src="sample/images/7.png" width="48" height="48" alt=""></a></li>
+<li><a href="#8"><img src="sample/images/8.png" width="48" height="48" alt=""></a></li>
+<li><a href="#9"><img src="sample/images/9.png" width="48" height="48" alt=""></a></li>
+<li><a href="#10"><img src="sample/images/10.png" width="48" height="48" alt=""></a></li>
+<li><a href="#11"><img src="sample/images/11.png" width="48" height="48" alt=""></a></li>
+<li><a href="#12"><img src="sample/images/12.png" width="48" height="48" alt=""></a></li>
+<li><a href="#13"><img src="sample/images/13.png" width="48" height="48" alt=""></a></li>
+<li><a href="#14"><img src="sample/images/14.png" width="48" height="48" alt=""></a></li>
+<li><a href="#15"><img src="sample/images/15.png" width="48" height="48" alt=""></a></li>
+<li><a href="#16"><img src="sample/images/16.png" width="48" height="48" alt=""></a></li>
+<li><a href="#17"><img src="sample/images/17.png" width="48" height="48" alt=""></a></li>
+<li><a href="#18"><img src="sample/images/18.png" width="48" height="48" alt=""></a></li>
+<li><a href="#19"><img src="sample/images/19.png" width="48" height="48" alt=""></a></li>
+<li><a href="#20"><img src="sample/images/20.png" width="48" height="48" alt=""></a></li>
+</ul>
+</div>
+<div class="flickableControl">
+<a href="javascript:;" id="flickbackbtn1" class="backbtn">&lt; PREV</a>
+<a href="javascript:;" id="flicknextbtn1" class="nextbtn">NEXT &gt;</a>
+<div id="indicator1" class="indicator"><img src="sample/images/indicater.png" width="13" height="5" alt=""></div>
+</div>
+<div id="flickableNavi"></div>
+<p id="debug"></p>
+<script type="text/javascript">
+(function(){
+
+	var fl = $('#flickable1');
+	var indelm = $('#indicator1');
+	var indimg = indelm.find('img');
+	var navelm = $('#flickableNavi');
+
+	fl.flickSimple({
+		snap: 'element',
+		onResize: function() {
+			// update indicator
+			indelm.css( { width: (this.pageLength * 13) + 'px' } );
+			
+			// update navigation
+			var _this = this;
+			navelm.find('a').remove();
+			for( var i=1; i<=this.pageLength; i++ ) {
+				var elm = $(document.createElement('a'));
+				elm.click( (function( page ) {
+					return function() { _this.goTo( page ); }
+				})(i) )
+					.attr( 'href', 'javascript:;' )
+					.html( ' &lt;' + i + '&gt; ' );
+				navelm.append( elm );
+			}
+		},
+		onChange: function() {
+			// move indicator
+			var pos = (this.page -1) * 13;
+			if ( this.android || ! this.webkit ) {
+				indimg.css( { left: pos +'px' } );
+			} else {
+				indimg.css( { webkitTransform:'translate3d('+ pos +'px,0,0)' } );
+			}
+		},
+		onClick: function(elm) {
+			elm.fadeOut('fast').fadeIn('fast').fadeOut('fast').fadeIn('fast');
+		}
+	});
+
+	// next button
+	$('#flicknextbtn1').click( function() {
+		fl.flickSimple( 'nextPage', 1 );
+		return false;
+	} );
+	
+	// back button
+	$('#flickbackbtn1').click( function() {
+		fl.flickSimple( 'prevPage', 1 );
+		return false;
+	} );
+	
+	// slideshow
+	var insfs = fl.flickSimple();
+	var ssflg = true;
+	if ( ! insfs.touchable ) {
+		fl.hover(
+			function() { ssflg = false; },
+			function() { ssflg = true; }
+		);
+	}
+	setInterval( function() {
+		if ( ! ssflg ) { return; }
+		if ( insfs.startX != null ) { return; }
+		( insfs.pageLength < insfs.page +1 )
+			? insfs.goTo( 1 )
+			: insfs.nextPage( 1 );
+	}, 3000 );
+})();
+</script>
+
+<p>※アイコンは<a href="http://www.tutorial9.net/downloads/nixus-icon-pack-60-beautiful-premium-icons-free/" target="_blank">NIXUS Icon Pack</a>を使わせていただきました。</p>
+
+<h2>特徴</h2>
+
+<p>iPhoneの特徴的なインタフェースであるフリック操作を、Webサイト上で実現するための jQueryプラグインです。</p>
+
+<p>同じような動作をするプラグインは他にもありますが、このプラグインについては以下のような目的のもとに作りました。</p>
+
+<ul>
+<li>フリック動作のみを実装する</li>
+<li>見た目に関連する部分は、なるべく自由にできるようにする</li>
+<li>その代わりに、拡張しやすいようにする
+	<ul>
+	<li>内部のパラメータに簡単にアクセスできるようにする</li>
+	<li>コールバック関数を用意する</li>
+	</ul>
+</li>
+<li>iPhone、Androidだけでなく、PCのブラウザ上でも動作させたい
+	<ul>
+	<li>IE6でも動いた</li>
+	<li>iPhone、Safari等、CSSアニメーションが使えるものは使う</li>
+	</ul>
+</li>
+<li>iPhone、Androidの縦持ち・横持ちに対応する</li>
+<li>子要素の中にアンカーや画像があっても大丈夫
+	<ul>
+	<li>Macの場合、画像がドラッグされてしまわないように対処</li>
+	</ul>
+</li>
+<li>同ページ内に複数設置できるようにする</li>
+</ul>
+
+<p>指定しただけでは、ナビゲーションやインジケータは表示されませんので、JavaScriptの初心者向けではありませんが、いろいろと機能を加えたい、JavaScriptやCSSを自分で組める方には、便利に使っていただけるのではないかと思っています。</p>
+
+
+<h2>Download</h2>
+
+<p><a href="http://www014.upp.so-net.ne.jp/makog/js/jquery_flicksimple.zip">http://www014.upp.so-net.ne.jp/makog/js/jquery_flicksimple.zip</a></p>
+
+<h2>使い方</h2>
+
+<h3>HTML</h3>
+
+<p>外枠を表すエレメントの中に、&lt;ul&gt; &lt;li&gt; で要素をリストにして並べます。</p>
+
+<pre>
+<code>
+&lt;script type=&quot;text/javascript&quot; src=&quot;js/jquery.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;js/jquery.flicksimple.js&quot;&gt;&lt;/script&gt;
+&lt;div id=&quot;flick&quot;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;1&lt;/li&gt;
+    &lt;li&gt;2&lt;/li&gt;
+    &lt;li&gt;3&lt;/li&gt;
+    &lt;li&gt;4&lt;/li&gt;
+    ...
+  &lt;/ul&gt;
+&lt;/div&gt;
+</code>
+</pre>
+
+<h3>CSS</h3>
+
+<p>動かす要素がリストなので、最低限リストを横並びにする必要はあります。</p>
+
+<pre>
+<code>
+#flick {
+	width: 100%;
+	position: relative; /* IE6・7の overflowバグ回避 */
+	overflow: auto;     /* JavaScript無効時にスクロール表示させたいから */
+}
+
+#flick ul {
+	display: block;
+	width: 400%;
+	margin: 0;
+	padding: 0;
+}
+
+#flick ul li {
+	float: left;
+	list-style-type: none;
+	width: 5%;
+}
+</code>
+</pre>
+
+<p>スマートフォンでは横持ち・縦持ちがあります。横持ちの時には以下のように各エレメントのclassに「landscape」が割り当てられますので、表示を変化させたい場合に使えます。</p>
+
+<pre>
+<code>
+&lt;div id=&quot;flick&quot; class=&quot;landscape&quot;&gt;
+  &lt;ul class=&quot;landscape&quot;&gt;
+    &lt;li class=&quot;landscape&quot;&gt;1&lt;/li&gt;
+    &lt;li class=&quot;landscape&quot;&gt;2&lt;/li&gt;
+    &lt;li class=&quot;landscape&quot;&gt;3&lt;/li&gt;
+    &lt;li class=&quot;landscape&quot;&gt;4&lt;/li&gt;
+    ...
+  &lt;/ul&gt;
+&lt;/div&gt;
+</code>
+</pre>
+
+
+<h3>JavaScript</h3>
+
+<p>外枠を表すエレメントのjQueryオブジェクトに、「.flickSimple()」するだけです。実行時のオプションについては、以下をご参照ください。</p>
+
+<pre>
+<code>
+$('#flick').flickSimple( {
+	// some options...
+} );
+</code>
+</pre>
+
+<h3>Options</h3>
+
+<p>実行する際の引数でいくつかの動作が変更できます。</p>
+
+<dl>
+<dt>target</dt>
+<dd>動かすエレメントを指定します。省略した場合は、内包している ul が自動的に指定されます。</dd>
+
+<dt>snap</dt>
+<dd>ページ区切りの仕方を指定します。以下のものが指定できます。
+	<dl>
+	<dt>element（デフォルト値）<dt>
+	<dd>外枠を表すエレメントの横幅でページを区切ります。</dd>
+	<dt>first</dt>
+	<dd>targetの子要素のうち最初のもの（最初のli）の横幅でページを区切ります。子要素一つ一つをページとしたい時に便利です。</dd>
+	<dt>smallest</dt>
+	<dd>targetの子要素のうち、最も横幅が小さいもの横幅でページを区切ります。</dd>
+	<dt>数値</dt>
+	<dd>指定されたピクセル数でページを区切ります。</dd>
+	<dt>0 または空白文字</dt>
+	<dd>ページ区切りが行われなくなります。</dd>
+	</dl>
+</dd>
+
+<dt>ratio</dt>
+<dd>フリックのスピードをどれぐらい反映させるかを指定します。デフォルトは「5」で、大きい値を指定するほど遅いスピードでも多く移動します。</dd>
+
+<dt>duration</dt>
+<dd>アニメーションの長さを指定します。デフォルトは0.6秒です。</dd>
+
+<dt>lock</dt>
+<dd>iPhoneを使用している場合、縦方向のスクロールを固定するかどうかを指定します。Androidの場合はこの指定は無効で、常にロックされた状態になります。デフォルトは false（ロックしない）です。</dd>
+
+<dt>android</dt>
+<dd>Androidかどうかを指定します。省略した場合は、UserAgentから自動的に判定します。</dd>
+
+<dt>onChange</dt>
+<dd>ページが切り替わった際に呼び出されるコールバック関数を指定します。</dd>
+
+<dt>onResize</dt>
+<dd>スマートフォンの場合は縦持ち・横持ちが変わった際、PCのブラウザの場合はウィンドウのサイズが変化した際に呼び出されるコールバック関数を指定します。</dd>
+
+<dt>onAnimationEnd</dt>
+<dd>フリック動作を行った後、アニメーションが終わったタイミングで呼び出されるコールバック関数を指定します。</dd>
+
+<dt>onClick</dt>
+<dd>targetの子要素にアンカーリンクを含む場合、そのアンカーリンクがクリック（タップ）された際に呼び出されるコールバック関数を指定します。この関数には、第一引数にクリック（タップ）されたエレメントのjQueryオブジェクトが渡されます。</dd>
+
+</dl>
+
+<h3>Properties</h3>
+
+<p>以下のように、プロパティに設定された値を参照するすることができます。</p>
+
+<pre>
+<code>
+  var prop = obj.flickSimple( 'プロパティ名' );
+</code>
+</pre>
+
+<p>プロパティに設定された値を書き換える場合は、以下のようにします。</p>
+
+<pre>
+<code>
+  obj.flickSimple( 'プロパティ名', '設定する値' );
+</code>
+</pre>
+
+<p>あるいは、以下のようにflickSimpleオブジェクトを取り出してから操作することも可能です。</p>
+
+<pre>
+<code>
+  var instance = obj.flickSimple();
+  var prop = instance.プロパティ名;
+</code>
+</pre>
+
+<p>上記のOptions（実行する際の引数）に指定した値は、全てプロパティとして参照・変更が可能です。</p>
+<p>また、オプション以外に以下の内部状態を示すプロパティ値があります。これらは変更を加えないようにしてください。</p>
+
+<dl>
+<dt>page</dt>
+<dd>現在表示しているページ番号が取得できます。snapオプションでページ区切りをしない指定をした場合には、ページに関する値は意味を成さないものとなります。</dd>
+
+<dt>pageWidth</dt>
+<dd>現在指定されているページ区切りのピクセル数が取得できます。</dd>
+
+<dt>pageLength</dt>
+<dd>全部で何ページあるかが取得できます。</dd>
+
+<dt>startX</dt>
+<dd>タッチが開始されたX座標が取得できます。タッチしてない場合には null になりますので、タッチ中かそうでないかを判定するための値としても使えます。</dd>
+
+<dt>currentX</dt>
+<dd>targetエレメントの現在のX座標（ピクセル）が取得できます。</dd>
+
+<dt>touchable</dt>
+<dd>ブラウザがタッチイベントに対応しているかどうかを取得できます。</dd>
+
+<dt>webkit</dt>
+<dd>ブラウザが「WebKitTransitionEvent」に対応しているかどうかを取得します。Androidの場合はこの値が trueになりますが、対応が中途半端なため、動作にCSSアニメーションは使用しないようにしています。</dd>
+
+</dl>
+
+<h3>Methods</h3>
+
+<p>以下のように関数を実行できます。オプションで指定したコールバック関数についても、同じように実行することができます。</p>
+
+<pre>
+<code>
+  var result = obj.flickSimple( '関数名', '引数1', '引数2', ... );
+</code>
+</pre>
+
+<p>あるいは、プロパティと同じように、flickSimpleオブジェクトを抜き出してから実行することも可能です。</p>
+
+<pre>
+<code>
+  var instance = obj.flickSimple();
+  var result = instance.関数名( '引数1', '引数2', ... );
+</code>
+</pre>
+
+<dl>
+<dt>init</dt>
+<dd>初期化を行います。targetエレメントの中に変更を加えた場合は、initを呼び出してください。返値はflickSimpleオブジェクトです。</dd>
+
+<dt>nextPage　引数：ページ数</dt>
+<dd>指定されたページ分、先のページに移動します。引数を省略した場合には、1ページ先に移動します。返値はflickSimpleオブジェクトです。</dd>
+
+<dt>prevPage　引数：ページ数</dt>
+<dd>指定されたページ分、前のページに移動します。引数を省略した場合には、1ページ前に移動します。返値はflickSimpleオブジェクトです。</dd>
+
+<dt>goTo　引数：ページ番号</dt>
+<dd>引数に指定したページに移動します。返値はflickSimpleオブジェクトです。</dd>
+
+<dt>move　引数：X座標（ピクセル数）</dt>
+<dd>指定されたX座標に移動します。返値はflickSimpleオブジェクトです。</dd>
+
+</dl>
+
+<div id="footer">
+<p>Copyright &copy; 2011 Makog. <a href="http://d.hatena.ne.jp/makog/" target="_blank">http://d.hatena.ne.jp/makog/</a></p>
+</div>
+
+</body>
+</html>
