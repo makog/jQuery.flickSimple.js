@@ -1,5 +1,5 @@
 /**
- * jQuery.flickSimple v1.1
+ * jQuery.flickSimple v1.1.1
  *
  * Copyright (c) 2011 Makog. http://d.hatena.ne.jp/makog/
  * Dual licensed under the MIT and GPL licenses:
@@ -63,7 +63,12 @@
 			o.onResize       = param.onResize;
 			o.onAnimationEnd = param.onAnimationEnd;
 			o.onClick        = param.onClick;
-
+			
+			if ( typeof window.onorientationchange === 'object'  ) {
+				$(window).bind( 'orientationchange', function(){ o.updateSize(); } );
+			} else {
+				$(window).bind( 'resize', function(){ o.updateSize(); } );
+			}
 			o.init();
 
 			if ( o.android || ! o.webkit ) {
@@ -74,12 +79,6 @@
 					webkitTransition:'none',
 					webkitTransform:'translate3d(0,0,0)'
 				});
-			}
-
-			if ( typeof window.onorientationchange !== 'undefined' ) {
-				$(window).bind( 'orientationchange', function(){ o.updateSize(); } );
-			} else {
-				$(window).bind( 'resize', function(){ o.updateSize(); } );
 			}
 			o.updateSize();
 			
@@ -139,7 +138,7 @@
 		updateSize: function() {
 			var o = this;
 			var ori = typeof( window.orientation ) !== 'undefined'
-				? ( window.orientation == 0 ? 'portrait' : 'landscape' )
+				? ( window.orientation === 0 ? 'portrait' : 'landscape' )
 				: ( window.innerWidth < window.innerHeight ? 'portrait' : 'landscape' );
 			var lis = o.target.find('li');
 	
