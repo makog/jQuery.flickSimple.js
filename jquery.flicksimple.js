@@ -64,7 +64,7 @@
 			o.onAnimationEnd = param.onAnimationEnd;
 			o.onClick        = param.onClick;
 			
-			if ( typeof window.onorientationchange === 'object'  ) {
+			if ( typeof window.onorientationchange === 'object' && ! o.android  ) {
 				$(window).bind( 'orientationchange', function(){ o.updateSize(); } );
 			} else {
 				$(window).bind( 'resize', function(){ o.updateSize(); } );
