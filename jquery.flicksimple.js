@@ -307,8 +307,6 @@
 				var targ = obj.attr('target');
 				if ( link && link != 'javascript:;' ) {
 					$.data(this, 'flickSimple.link', link );
-				} else {
-					$.data(this, 'flickSimple.link', '' );
 				}
 				$.data(this, 'flickSimple.target', targ || '' );
 				obj.attr('href', 'javascript:;').removeAttr('target');
