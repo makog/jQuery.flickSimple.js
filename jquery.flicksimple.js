@@ -193,6 +193,7 @@
 			// 長押し対応
 			setTimeout( function() {
 				if ( o.anc ) {
+					o.startX = null;
 					var anc = o.anc;
 					var link = $.data(anc.get(0), 'flickSimple.link' );
 					if ( link ) {
