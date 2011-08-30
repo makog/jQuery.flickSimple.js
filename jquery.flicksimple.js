@@ -33,6 +33,7 @@
 		webkit: true,
 		touchable: true,
 		anc: null,
+		touchhold: false,
 		
 		startX: null,
 		preX: 0,
@@ -49,7 +50,7 @@
 			o.target = param.target || o.elm.find('ul');
 			
 			o.android = param.android === void 0
-				? navigator.userAgent.indexOf('Android') != -1
+				? navigator.userAgent.indexOf('Android') !== -1
 				: param.android;
 			o.webkit = typeof( WebKitTransitionEvent ) !== "undefined";
 			o.touchable = typeof( ontouchstart ) !== "undefined";
@@ -151,11 +152,11 @@
 			var elmw = o.elm.width();
 			o.elmWidth = targw - elmw;
 	
-			if ( o.snap == 'element' ) {
+			if ( o.snap === 'element' ) {
 				o.pageWidth = elmw;
-			} else if ( o.snap == 'first' ) {
+			} else if ( o.snap === 'first' ) {
 				o.pageWidth = $(lis.get(0)).width();
-			} else if ( o.snap == 'smallest' ) {
+			} else if ( o.snap === 'smallest' ) {
 				var smaller = 0;
 				lis.each( function() {
 					var w = $(this).width();
@@ -183,6 +184,7 @@
 			var o = this;
 			var te = o.touchable ? event.changedTouches[0] : e;
 			o.startX = te.clientX;
+			o.touchhold = false;
 			var anc = e.target.tagName === 'A'
 				? $(e.target)
 				: $(e.target).closest('a');
@@ -193,7 +195,8 @@
 			// 長押し対応
 			setTimeout( function() {
 				if ( o.anc ) {
-					o.startX = null;
+					// o.startX = null;
+					o.touchhold = true;
 					var anc = o.anc;
 					var link = $.data(anc.get(0), 'flickSimple.link' );
 					if ( link ) {
@@ -212,10 +215,15 @@
 			if ( o.android || o.lock ) {
 				e.preventDefault();
 			}
-			o.anc = null;
-			if ( o.startX === null ) { return; }
+			if ( o.startX === null ) {
+				o.anc = null;
+				return;
+			}
 			var te = o.touchable ? e.originalEvent.touches[0] : e;
 			var nowX = te.clientX;
+			if ( Math.abs( o.startX - nowX ) > 16 ) {
+				o.anc = null;
+			}
 			o.nextX = (o.currentX || 0) + ( nowX - o.startX );
 			if ( o.android || ! o.webkit ) {
 				o.target.css( { left: o.nextX + 'px' } );
@@ -231,9 +239,9 @@
 	
 		touchend: function(e) {
 			var o = this;
-			if ( o.startX === null ) { return; }
+			// if ( o.startX === null ) { return; }
 			o.startX = null;
-			if ( o.anc ) {
+			if ( o.anc && ! o.touchhold ) {
 				if ( $.isFunction( o.onClick ) ) {
 					o.onClick( o.anc );
 				}
@@ -252,6 +260,7 @@
 				}
 				return false;
 			}
+			o.touchhold = false;
 
 			var npos = o.nextX + (o.flickX * -o.ratio);
 			if ( o.pageWidth ) {
@@ -306,7 +315,7 @@
 				var obj = $(this);
 				var link = obj.attr('href');
 				var targ = obj.attr('target');
-				if ( link && link != 'javascript:;' ) {
+				if ( link && link !== 'javascript:;' ) {
 					$.data(this, 'flickSimple.link', link );
 				}
 				$.data(this, 'flickSimple.target', targ || '' );
