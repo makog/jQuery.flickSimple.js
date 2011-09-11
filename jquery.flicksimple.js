@@ -36,6 +36,7 @@
 		touchhold: false,
 		
 		startX: null,
+		startY: null,
 		preX: 0,
 		currentX: 0,
 		flickX: 0,
@@ -184,6 +185,7 @@
 			var o = this;
 			var te = o.touchable ? event.changedTouches[0] : e;
 			o.startX = te.clientX;
+			o.startY = te.clientY;
 			o.touchhold = false;
 			var anc = e.target.tagName === 'A'
 				? $(e.target)
@@ -221,7 +223,7 @@
 			}
 			var te = o.touchable ? e.originalEvent.touches[0] : e;
 			var nowX = te.clientX;
-			if ( Math.abs( o.startX - nowX ) > 16 ) {
+			if ( Math.abs( o.startX - nowX ) > 16 || Math.abs( o.startY - te.clientY ) > 16 ) {
 				o.anc = null;
 			}
 			o.nextX = (o.currentX || 0) + ( nowX - o.startX );
@@ -239,8 +241,9 @@
 	
 		touchend: function(e) {
 			var o = this;
-			// if ( o.startX === null ) { return; }
+			if ( o.startX === null ) { return; }
 			o.startX = null;
+			o.startY = null;
 			if ( o.anc && ! o.touchhold ) {
 				if ( $.isFunction( o.onClick ) ) {
 					o.onClick( o.anc );
@@ -258,7 +261,7 @@
 						location.href = link;
 					}
 				}
-				return false;
+				e.preventDefault();
 			}
 			o.touchhold = false;
 
