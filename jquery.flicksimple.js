@@ -50,11 +50,11 @@
 		flickY: 0,
 		nextX: 0,
 		nextY: 0,
-	//	debug: null,
+		debug: null,
 
 		setup: function( obj, param ) {
 			var o = this;
-		//	o.debug = $('#debug');
+			o.debug = $('#debug');
 			o.elm = obj;
 			o.elm.css( { overflow: 'hidden' } );
 			o.target = param.target || $(o.elm.children().get(0));
@@ -189,26 +189,6 @@
 			var elmw = o.elm.width();
 			var elmh = o.elm.height();
 			o.elmWidth = targw - elmw;
-<<<<<<< HEAD
-	
-			if ( o.snap === 'element' ) {
-				o.pageWidth = elmw;
-			} else if ( o.snap === 'first' ) {
-				o.pageWidth = $(lis.get(0)).width();
-			} else if ( o.snap === 'smallest' ) {
-				var smaller = 0;
-				lis.each( function() {
-					var w = $(this).width();
-					if ( smaller > w || smaller == 0 ) {
-						smaller = w;
-					}
-				} );
-				o.pageWidth = smaller;
-			} else if ( ! isNaN(o.snap) ) {
-				o.pageWidth = o.snap;
-			} else {
-				o.pageWidth = 0;
-=======
 			o.elmHeight = targh - elmh;
 
 			o.pageWidth = 0;
@@ -252,7 +232,6 @@
 				if ( targh > o.pageHeight ) {
 					o.pageLength *= Math.ceil( targh / o.pageHeight );
 				}
->>>>>>> Support vertical mode
 			}
 	
 			if ( $.isFunction(o.onResize) ) {
@@ -298,29 +277,18 @@
 			if ( o.android || o.lock ) {
 				e.preventDefault();
 			}
-<<<<<<< HEAD
-			if ( o.startX === null ) {
-=======
 			if ( o.startX === null || o.startY === null ) {
->>>>>>> Support vertical mode
 				o.anc = null;
 				return;
 			}
 			var te = o.touchable ? e.originalEvent.touches[0] : e;
 			var nowX = te.clientX;
-<<<<<<< HEAD
-			if ( Math.abs( o.startX - nowX ) > 16 || Math.abs( o.startY - te.clientY ) > 16 ) {
-				o.anc = null;
-			}
-			o.nextX = (o.currentX || 0) + ( nowX - o.startX );
-=======
 			var nowY = te.clientY;
 			if ( Math.abs( o.startX - nowX ) > 16 || Math.abs( o.startY - te.clientY ) > 16 ) {
 				o.anc = null;
 			}
 			o.nextX = o.horizontal ? (o.currentX || 0) + ( nowX - o.startX ) : 0;
 			o.nextY = o.vertical ? (o.currentY || 0) + ( nowY - o.startY ) : 0;
->>>>>>> Support vertical mode
 			if ( o.android || ! o.webkit ) {
 				o.target.css( { left: o.nextX + 'px', top: o.nextY } );
 			} else {
