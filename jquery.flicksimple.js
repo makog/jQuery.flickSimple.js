@@ -1,5 +1,5 @@
 /**
- * jQuery.flickSimple v1.1.1
+ * jQuery.flickSimple v1.2.0
  *
  * Copyright (c) 2011 Makog. http://d.hatena.ne.jp/makog/
  * Dual licensed under the MIT and GPL licenses:
@@ -24,10 +24,15 @@
 		onResize: null,
 		onAnimationEnd: null,
 		onClick: null,
+		vertical: false,
+		horizontal: true,
+		paginate: 'x',
 	
 		elmWidth: 0,
+		elmHeight: 0,
 		page: 1,
 		pageWidth: 0,
+		pageHeight: 0,
 		pageLength: 0,
 		android: false,
 		webkit: true,
@@ -36,18 +41,23 @@
 		touchhold: false,
 		
 		startX: null,
+		startY: null,
 		preX: 0,
+		preY: 0,
 		currentX: 0,
+		currentY: 0,
 		flickX: 0,
+		flickY: 0,
 		nextX: 0,
-		// debug: null,
+		nextY: 0,
+		debug: null,
 
 		setup: function( obj, param ) {
 			var o = this;
-		//	o.debug = $('#debug');
+			o.debug = $('#debug');
 			o.elm = obj;
 			o.elm.css( { overflow: 'hidden' } );
-			o.target = param.target || o.elm.find('ul');
+			o.target = param.target || $(o.elm.children().get(0));
 			
 			o.android = param.android === void 0
 				? navigator.userAgent.indexOf('Android') !== -1
@@ -55,10 +65,13 @@
 			o.webkit = typeof( WebKitTransitionEvent ) !== "undefined";
 			o.touchable = typeof( ontouchstart ) !== "undefined";
 
-			if ( param.snap  !== void 0 )    o.snap = param.snap;
-			if ( param.ratio !== void 0 )    o.ratio = param.ratio;
-			if ( param.duration !== void 0 ) o.duration = param.duration;
-			if ( param.lock !== void 0 )     o.lock = param.lock;
+			if ( param.snap  !== void 0 )     o.snap = param.snap;
+			if ( param.ratio !== void 0 )     o.ratio = param.ratio;
+			if ( param.duration !== void 0 )  o.duration = param.duration;
+			if ( param.lock !== void 0 )      o.lock = param.lock;
+			if ( param.vertical !== void 0 )  o.vertical = param.vertical;
+			if ( param.horizontal !== void 0) o.horizontal = param.horizontal;
+			if ( param.paginate !== void 0 )  o.paginate = param.paginate;
 
 			o.onChange       = param.onChange;
 			o.onResize       = param.onResize;
@@ -113,26 +126,48 @@
 		
 		// 指定されたページへ移動
 		goTo: function( pagenum ) {
-			var pos = (pagenum -1) * this.pageWidth;
-			return this.move( -pos );
+			if ( pagenum > this.pageLength ) {
+				pagenum = this.pageLength;
+			}
+			pagenum--;
+			
+			var pageX, pageY, rownum;
+			if ( this.paginate === 'y' ) {
+				rownum = Math.ceil( this.elmHeight / this.pageHeight ) +1;
+				pageX = Math.floor( pagenum / rownum );
+				pageY = pagenum % rownum;
+			} else {
+				rownum = Math.ceil( this.elmWidth / this.pageWidth ) +1;
+				pageY = Math.floor( pagenum / rownum );
+				pageX = pagenum % rownum;
+			}
+			var posX = pageX * this.pageWidth;
+			var posY = pageY * this.pageHeight;
+			return this.move( -posX, -posY );
 		},
 		
 		// 指定されたX座標に移動
-		move: function( pos ) {
-			if ( pos > 0 ) {
-				pos = 0;
-			} else if ( pos < -this.elmWidth ) {
-				pos = -this.elmWidth;
+		move: function( posX, posY ) {
+			if ( ! this.horizontal || posX >= 0 ) {
+				posX = 0;
+			} else if ( posX < -this.elmWidth ) {
+				posX = -this.elmWidth;
 			}
+			if ( ! this.vertical || posY >= 0 ) {
+				posY = 0;
+			} else if ( posY < -this.elmHeight ) {
+				posY = -this.elmHeight;
+			}
+
 			if ( this.android || ! this.webkit ) {
-				this.target.animate( { left: pos + 'px' } );
+				this.target.animate( { left: posX + 'px', top: posY + 'px' } );
 			} else {
 				this.target.css( {
 					webkitTransition:"-webkit-transform 0.3s ease-in",
-					webkitTransform:"translate3d("+pos+"px,0,0)"
+					webkitTransform:"translate3d(" + posX + "px," + posY + "px,0)"
 				} );
 			}
-			return this.update( pos );
+			return this.update( posX, posY );
 		},
 		
 		// 表示が変更されたら、各エレメントの大きさを計算し直す
@@ -141,7 +176,8 @@
 			var ori = typeof( window.orientation ) !== 'undefined'
 				? ( window.orientation === 0 ? 'portrait' : 'landscape' )
 				: ( window.innerWidth < window.innerHeight ? 'portrait' : 'landscape' );
-			var lis = o.target.find('li');
+			// var lis = o.target.find('li');
+			var lis = o.target.children();
 	
 			o.elm.removeClass('landscape portrait').addClass( ori );
 			// うまく反映されない場合があるので、エレメント自体にclassを振る
@@ -149,33 +185,58 @@
 			lis.removeClass('landscape portrait').addClass( ori );
 	
 			var targw = o.target.width();
+			var targh = o.target.height();
 			var elmw = o.elm.width();
+			var elmh = o.elm.height();
 			o.elmWidth = targw - elmw;
-	
-			if ( o.snap === 'element' ) {
-				o.pageWidth = elmw;
-			} else if ( o.snap === 'first' ) {
-				o.pageWidth = $(lis.get(0)).width();
-			} else if ( o.snap === 'smallest' ) {
-				var smaller = 0;
-				lis.each( function() {
-					var w = $(this).width();
-					if ( smaller > w || smaller == 0 ) {
-						smaller = w;
-					}
-				} );
-				o.pageWidth = smaller;
-			} else if ( ! isNaN(o.snap) ) {
-				o.pageWidth = o.snap;
-			} else {
-				o.pageWidth = 0;
+			o.elmHeight = targh - elmh;
+
+			o.pageWidth = 0;
+			o.pageHeight = 0;
+			o.pageLength = 0;
+			if ( o.snap ) {
+				if ( o.snap === 'element' ) {
+					o.pageWidth = elmw;
+					o.pageHeight = elmh;
+				} else if ( o.snap === 'first' ) {
+					o.pageWidth = $(lis.get(0)).width();
+					o.pageHeight = $(lis.get(0)).height();
+				} else if ( o.snap === 'smallest' ) {
+					var smaller = 0;
+					lis.each( function() {
+						var w = $(this).width();
+						if ( smaller > w || smaller == 0 ) {
+							smaller = w;
+						}
+					} );
+					o.pageWidth = smaller;
+					
+					smaller = 0;
+					lis.each( function() {
+						var h = $(this).height();
+						if ( smaller > h || smaller == 0 ) {
+							smaller = h;
+						}
+					} );
+					o.pageHeight = smaller;
+		
+				} else if ( typeof o.snap === 'object' ) {
+					o.pageWidth = o.snap[0];
+					o.pageHeight = o.snap[1];
+				} else if ( ! isNaN(o.snap) ) {
+					o.pageWidth = o.snap;
+					o.pageHeight = o.snap;
+				}
+				
+				o.pageLength = Math.ceil( targw / o.pageWidth );
+				if ( targh > o.pageHeight ) {
+					o.pageLength *= Math.ceil( targh / o.pageHeight );
+				}
 			}
-			o.pageLength = Math.ceil( targw / o.pageWidth );
 	
 			if ( $.isFunction(o.onResize) ) {
 				o.onResize();
 			}
-	
 			o.goTo( o.page );
 			return o;
 		},
@@ -184,6 +245,7 @@
 			var o = this;
 			var te = o.touchable ? event.changedTouches[0] : e;
 			o.startX = te.clientX;
+			o.startY = te.clientY;
 			o.touchhold = false;
 			var anc = e.target.tagName === 'A'
 				? $(e.target)
@@ -215,32 +277,37 @@
 			if ( o.android || o.lock ) {
 				e.preventDefault();
 			}
-			if ( o.startX === null ) {
+			if ( o.startX === null || o.startY === null ) {
 				o.anc = null;
 				return;
 			}
 			var te = o.touchable ? e.originalEvent.touches[0] : e;
 			var nowX = te.clientX;
-			if ( Math.abs( o.startX - nowX ) > 16 ) {
+			var nowY = te.clientY;
+			if ( Math.abs( o.startX - nowX ) > 16 || Math.abs( o.startY - te.clientY ) > 16 ) {
 				o.anc = null;
 			}
-			o.nextX = (o.currentX || 0) + ( nowX - o.startX );
+			o.nextX = o.horizontal ? (o.currentX || 0) + ( nowX - o.startX ) : 0;
+			o.nextY = o.vertical ? (o.currentY || 0) + ( nowY - o.startY ) : 0;
 			if ( o.android || ! o.webkit ) {
-				o.target.css( { left: o.nextX + 'px' } );
+				o.target.css( { left: o.nextX + 'px', top: o.nextY } );
 			} else {
 				o.target.css( {
 					webkitTransition:"none",
-					webkitTransform:"translate3d("+o.nextX+"px,0,0)"
+					webkitTransform:"translate3d("+o.nextX+"px,"+o.nextY+"px,0)"
 				} );
 			}
 			o.flickX = o.preX - nowX;
+			o.flickY = o.preY - nowY;
 			o.preX = nowX;
+			o.preY = nowY;
 		},
 	
 		touchend: function(e) {
 			var o = this;
-			// if ( o.startX === null ) { return; }
+			if ( o.startX === null || o.startY === null ) { return; }
 			o.startX = null;
+			o.startY = null;
 			if ( o.anc && ! o.touchhold ) {
 				if ( $.isFunction( o.onClick ) ) {
 					o.onClick( o.anc );
@@ -258,45 +325,68 @@
 						location.href = link;
 					}
 				}
-				return false;
+				e.preventDefault();
 			}
 			o.touchhold = false;
 
-			var npos = o.nextX + (o.flickX * -o.ratio);
+			var nposX = o.nextX + (o.flickX * -o.ratio);
+			var nposY = o.nextY + (o.flickY * -o.ratio);
 			if ( o.pageWidth ) {
-				var thr = npos % o.pageWidth;
-				if ( thr < -o.pageWidth / 2 ) {
-					npos -= thr + o.pageWidth;
+				var thrX = nposX % o.pageWidth;
+				if ( thrX < -o.pageWidth / 2 ) {
+					nposX -= thrX + o.pageWidth;
 				} else {
-					npos -= thr;
+					nposX -= thrX;
+				}
+				var thrY = nposY % o.pageHeight;
+				if ( thrY < -o.pageHeight / 2 ) {
+					nposY -= thrY + o.pageHeight;
+				} else {
+					nposY -= thrY;
 				}
 			}
-			if ( npos > 0 ) {
-				npos = 0;
-			} else if ( npos < -o.elmWidth ) {
-				npos = -o.elmWidth;
+			if ( ! o.horizontal || nposX >= 0 ) {
+				nposX = 0;
+			} else if ( nposX < -o.elmWidth ) {
+				nposX = -o.elmWidth;
 			}
+			if ( ! o.vertical || nposY >= 0 ) {
+				nposY = 0;
+			} else if ( nposY < -o.elmHeight ) {
+				nposY = -o.elmHeight;
+			}
+		
 			
 			if ( o.android || ! o.webkit ) {
-				o.target.animate( { left: npos + 'px' }, o.duration,
+				o.target.animate( { left: nposX + 'px', top: nposY + 'px' }, o.duration,
 					function (x, t, b, c, d) { return -c *(t/=d)*(t-2) + b; } );
 			} else {
 				o.target.css( {
 					webkitTransition:"-webkit-transform "
 						+ (o.duration / 1000) + "s ease-out",
-					webkitTransform:"translate3d("+npos+"px,0,0)"
+					webkitTransform:"translate3d("+nposX+"px,"+nposY+"px,0)"
 				} );
 			}
-			o.update( npos );
+			o.update( nposX, nposY );
 		},
 		
-		update: function( pos ) {
+		update: function( posX, posY ) {
 			var o = this;
-			if ( o.pageWidth ) {
-				o.page = Math.ceil( (pos * -1) / o.pageWidth ) +1;
+			if ( o.pageWidth || o.pageHeight ) {
+				var rownum;
+				if ( o.paginate === 'y' ) {
+					rownum = Math.ceil( this.elmHeight / this.pageHeight ) +1;
+					o.page = Math.ceil( -posY / o.pageHeight )
+						+ ( Math.ceil( -posX / o.pageWidth ) * rownum) +1;
+				} else {
+					rownum = Math.ceil( this.elmWidth / this.pageWidth ) +1;
+					o.page = Math.ceil( -posX / o.pageWidth )
+						+ (Math.ceil( -posY / o.pageHeight ) * rownum) +1;
+				}
 			}
-			if ( o.currentX !== pos ) {
-				o.currentX = pos;
+			if ( o.currentX !== posX || o.currentY !== posY ) {
+				o.currentX = posX;
+				o.currentY = posY;
 				if ( $.isFunction( o.onChange ) ) {
 					o.onChange();
 				}
