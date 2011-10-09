@@ -50,7 +50,6 @@ dl {
 }
 
 dl dt {
-	clear: both;
 	font-weight: bold;
 	margin-top: 1em;
 }
@@ -65,18 +64,6 @@ pre {
 	overflow: auto;
 	border: solid 1px #ccc;
 	background-color: #f9f9f9;
-}
-
-table.example {
-	float: right;
-	margin: 0 0 0 0.5em;
-}
-
-table.example td {
-	width: 3em;
-	height: 3em;
-	border:solid 1px #ccc;
-	text-align: center;
 }
 
 #footer {
@@ -110,13 +97,12 @@ table.example td {
 .flickSimple ul li {
 	float: left;
 	list-style-type: none;
+	
 	text-align: center;
 }
 
 .flickSimple ul li.landscape {
 }
-
-/* ----------------------------- */
 
 #basic ul,
 #basic ul.landscape {
@@ -127,21 +113,6 @@ table.example td {
 #basic ul li.landscape {
 	width: 80px
 }
-
-#basic ul li.newline {
-	clear: both;
-}
-
-#basic ul li a {
-	display: block;
-	height: 80px;
-	margin: 5px;
-	border: solid 1px #ccc;
-	background-color: #fff;
-	line-height: 80px;
-}
-
-/* ----------------------------- */
 
 #firstitem ul {
 	width: 1920px;
@@ -158,17 +129,6 @@ table.example td {
 	width: 240px;
 }
 
-#firstitem ul li a {
-	display: block;
-	height: 80px;
-	margin: 5px;
-	border: solid 1px #ccc;
-	background-color: #fff;
-	line-height: 80px;
-}
-
-/* ----------------------------- */
-
 #nosnap ul,
 #nosnap ul.landscape {
 	width: 1920px;
@@ -179,90 +139,6 @@ table.example td {
 	width: 160px
 }
 
-#nosnap ul li a {
-	display: block;
-	height: 80px;
-	margin: 5px;
-	border: solid 1px #ccc;
-	background-color: #fff;
-	line-height: 80px;
-}
-
-/* ----------------------------- */
-
-#verticaly {
-	width: 160px;
-	height: 240px;
-}
-
-#verticaly ul,
-#verticaly ul.landscape {
-	height: 960px;
-}
-
-#verticaly ul li,
-#verticaly ul li.landscape {
-	width: 160px;
-	height: 80px;
-}
-
-#verticaly ul li a {
-	display: block;
-	height: 70px;
-	margin: 5px;
-	border: solid 1px #ccc;
-	background-color: #fff;
-	line-height: 70px;
-}
-
-/* ----------------------------- */
-
-#both {
-	width: 320px;
-	height: 80px;
-}
-
-#both ul,
-#both ul.landscape {
-	width: 960px;
-	height: 240px;
-}
-
-#both ul li,
-#both ul li.landscape {
-	width: 80px;
-	height: 80px;
-}
-
-#both ul li a {
-	display: block;
-	height: 70px;
-	margin: 5px;
-	border: solid 1px #ccc;
-	background-color: #fff;
-	line-height: 70px;
-}
-
-#bothPageCount {
-	text-align: center;
-}
-
-#bothPaginate {
-	text-align: center;
-}
-
-/* ----------------------------- */
-
-#scroll {
-	height: 180px;
-}
-
-#scroll > div {
-	width: 900px;
-}
-
-
-/* ----------------------------- */
 #flickable1,
 #flickable1.landscape {
 	width: 100%;
@@ -276,6 +152,17 @@ table.example td {
 
 #flickable1 ul li {
 	width: 5%;
+}
+
+#basic ul li a,
+#firstitem ul li a,
+#nosnap ul li a {
+	display: block;
+	height: 80px;
+	margin: 5px;
+	border: solid 1px #ccc;
+	background-color: #fff;
+	line-height: 80px;
 }
 
 .flickableControl {
@@ -325,8 +212,6 @@ table.example td {
 
 <h2>Demos</h2>
 
-<!-- p id="debug"></p -->
-
 <h3>Basic</h3>
 <div id="basic" class="flickSimple">
 <ul>
@@ -357,7 +242,7 @@ table.example td {
 </ul>
 </div>
 <script type="text/javascript">
-	$('#basic').flickSimple();
+	$('#basic').flickSimple({});
 </script>
 
 <h3>Snap first item width</h3>
@@ -378,9 +263,11 @@ table.example td {
 </ul>
 </div>
 <script type="text/javascript">
+
 	$('#firstitem').flickSimple({
 		snap: "first"
 	});
+
 </script>
 
 <h3>No snap</h3>
@@ -405,127 +292,6 @@ table.example td {
 		snap: ''
 	});
 </script>
-
-<h3>Verticaly</h3>
-<div id="verticaly" class="flickSimple">
-<ul>
-<li><a href="#1">1</a></li>
-<li><a href="#2">2</a></li>
-<li><a href="#3">3</a></li>
-<li><a href="#4">4</a></li>
-<li><a href="#5">5</a></li>
-<li><a href="#6">6</a></li>
-<li><a href="#7">7</a></li>
-<li><a href="#8">8</a></li>
-<li><a href="#9">9</a></li>
-<li><a href="#10">10</a></li>
-<li><a href="#11">11</a></li>
-<li><a href="#12">12</a></li>
-</ul>
-</div>
-<script type="text/javascript">
-	$('#verticaly').flickSimple({
-		vertical: true,
-		horizontal: false,
-		lock: true
-	});
-</script>
-
-<h3>Both</h3>
-<div id="both" class="flickSimple">
-<ul>
-<li><a href="#1">1</a></li>
-<li><a href="#2">2</a></li>
-<li><a href="#3">3</a></li>
-<li><a href="#4">4</a></li>
-<li><a href="#5">5</a></li>
-<li><a href="#6">6</a></li>
-<li><a href="#7">7</a></li>
-<li><a href="#8">8</a></li>
-<li><a href="#9">9</a></li>
-<li><a href="#10">10</a></li>
-<li><a href="#11">11</a></li>
-<li><a href="#12">12</a></li>
-<li><a href="#13">13</a></li>
-<li><a href="#14">14</a></li>
-<li><a href="#15">15</a></li>
-<li><a href="#16">16</a></li>
-<li><a href="#17">17</a></li>
-<li><a href="#18">18</a></li>
-<li><a href="#19">19</a></li>
-<li><a href="#20">20</a></li>
-<li><a href="#21">21</a></li>
-<li><a href="#22">22</a></li>
-<li><a href="#23">23</a></li>
-<li><a href="#24">24</a></li>
-<li><a href="#25">25</a></li>
-<li><a href="#26">26</a></li>
-<li><a href="#27">27</a></li>
-<li><a href="#28">28</a></li>
-<li><a href="#29">29</a></li>
-<li><a href="#30">30</a></li>
-<li><a href="#31">31</a></li>
-<li><a href="#32">32</a></li>
-<li><a href="#33">33</a></li>
-<li><a href="#34">34</a></li>
-<li><a href="#35">35</a></li>
-<li><a href="#36">36</a></li>
-</ul>
-</div>
-<div class="flickableControl">
-<a href="javascript:;" id="bothPrevBtn" class="backbtn">&lt; PREV</a>
-<a href="javascript:;" id="bothNextBtn" class="nextbtn">NEXT &gt;</a>
-<div id="bothPageCount">/</div>
-</div>
-<div id="bothPaginate"><a href="javascript:;" id="bothSwitchPaginate">Switch Paginate (now:<span id="bothNowPaginate"></span>)</a></div>
-<script type="text/javascript">
-(function() {
-	var ind = $('#bothPageCount');
-
-	$('#both').flickSimple({
-		vertical: true,
-		horizontal: true,
-		lock: true,
-		paginate: 'y',
-		onChange: function() {
-			ind.html( this.page + '/' + this.pageLength );
-		}
-	});
-
-	var fs = $('#both').flickSimple();
-	fs.onChange();
-	
-	$('#bothNowPaginate').html( fs.paginate );
-	
-	$('#bothPrevBtn').click( function() {
-		fs.prevPage(1);
-		return false;
-	});
-	$('#bothNextBtn').click( function() {
-		fs.nextPage(1);
-		return false;
-	});
-	$('#bothSwitchPaginate').click( function() {
-		fs.paginate = fs.paginate === 'x' ? 'y' : 'x';
-		$('#bothNowPaginate').html( fs.paginate );
-		fs.goTo( fs.page );
-	});
-})();
-</script>
-
-<h3>Flick scroll</h3>
-<div id="scroll" class="flickSimple">
-<div><img src="sample/images/img.jpg" width="900" height="600" alt=""></div>
-</div>
-<script type="text/javascript">
-	$('#scroll').flickSimple({
-		vertical: true,
-		horizontal: true,
-		lock: true,
-		snap: 0
-	});
-</script>
-
 
 <h3>with indicator, controllers and animation.</h3>
 <div id="flickable1" class="flickSimple">
@@ -558,8 +324,10 @@ table.example td {
 <div id="indicator1" class="indicator"><img src="sample/images/indicater.png" width="13" height="5" alt=""></div>
 </div>
 <div id="flickableNavi"></div>
+<p id="debug"></p>
 <script type="text/javascript">
 (function(){
+
 	var fl = $('#flickable1');
 	var indelm = $('#indicator1');
 	var indimg = indelm.find('img');
@@ -690,11 +458,9 @@ table.example td {
 </code>
 </pre>
 
-<p class="notes">※本来は中に入れる要素はどのようなタグでも問題ありませんが、ここではわかりやすく、&lt;ul&gt; &lt;li&gt;としています。
-
 <h3>CSS</h3>
 
-<p>動かす要素を横並び、あるいは縦並びにします。</p>
+<p>動かす要素がリストなので、最低限リストを横並びにする必要はあります。</p>
 
 <pre>
 <code>
@@ -754,7 +520,7 @@ $('#flick').flickSimple( {
 
 <dl>
 <dt>target</dt>
-<dd>動かすエレメントを指定します。省略した場合は、内包している最初の子要素が自動的に指定されます。</dd>
+<dd>動かすエレメントを指定します。省略した場合は、内包している ul が自動的に指定されます。</dd>
 
 <dt>snap</dt>
 <dd>ページ区切りの仕方を指定します。以下のものが指定できます。
@@ -779,38 +545,7 @@ $('#flick').flickSimple( {
 <dd>アニメーションの長さを指定します。デフォルトは0.6秒です。</dd>
 
 <dt>lock</dt>
-<dd>iPhoneを使用している場合、ページ全体のスクロールを固定するかどうかを指定します。Androidの場合はこの指定は無効で、常にロックされた状態になります。デフォルトは false（ロックしない）です。</dd>
-
-<dt>horizontal</dt>
-<dd>縦方向にフリック（？）させたい場合には、true を指定します。省略した場合のデフォルトは falseです。iPhoneの場合、縦方向にスクロールするページで使用する際には、ページ全体の縦スクロールをロックするため、上記の lock を true に設定する必要があります。</dd>
-
-<dt>vertical</dt>
-<dd>横方向にフリックをさせたくない場合には、false を指定します。省略した場合のデフォルトは trueです。</dd>
-
-<dt>paginate</dt>
-<dd>
-<table class="example">
-<caption>例）「y」の場合</caption>
-<tr>
-<td>1</td><td>3</td><td>5</td>
-</tr>
-<tr>
-<td>2</td><td>4</td><td>6</td>
-</tr>
-</table>
-
-<table class="example">
-<caption>例）「x」の場合</caption>
-<tr>
-<td>1</td><td>2</td><td>3</td>
-</tr>
-<tr>
-<td>4</td><td>5</td><td>6</td>
-</tr>
-</table>
-
-horizontal、verticalが両方 tureの場合の、ページの割り付け方を指定します。「x」を指定した場合は横方向、「y」を指定した場合は縦方向にページを割り付けます。デフォルトは「x」です。
-</dd>
+<dd>iPhoneを使用している場合、縦方向のスクロールを固定するかどうかを指定します。Androidの場合はこの指定は無効で、常にロックされた状態になります。デフォルトは false（ロックしない）です。</dd>
 
 <dt>android</dt>
 <dd>Androidかどうかを指定します。省略した場合は、UserAgentから自動的に判定します。</dd>
@@ -864,10 +599,7 @@ horizontal、verticalが両方 tureの場合の、ページの割り付け方を
 <dd>現在表示しているページ番号が取得できます。snapオプションでページ区切りをしない指定をした場合には、ページに関する値は意味を成さないものとなります。</dd>
 
 <dt>pageWidth</dt>
-<dd>現在指定されているページ区切りの横幅ピクセル数が取得できます。</dd>
-
-<dt>pageHeight</dt>
-<dd>現在指定されているページ区切りの高さピクセル数が取得できます。</dd>
+<dd>現在指定されているページ区切りのピクセル数が取得できます。</dd>
 
 <dt>pageLength</dt>
 <dd>全部で何ページあるかが取得できます。</dd>
@@ -877,9 +609,6 @@ horizontal、verticalが両方 tureの場合の、ページの割り付け方を
 
 <dt>currentX</dt>
 <dd>targetエレメントの現在のX座標（ピクセル）が取得できます。</dd>
-
-<dt>currentY</dt>
-<dd>targetエレメントの現在のY座標（ピクセル）が取得できます。</dd>
 
 <dt>touchable</dt>
 <dd>ブラウザがタッチイベントに対応しているかどうかを取得できます。</dd>
