@@ -167,6 +167,8 @@
 					webkitTransform:"translate3d(" + posX + "px," + posY + "px,0)"
 				} );
 			}
+			this.nextX = posX;
+			this.nextY = posY;
 			return this.update( posX, posY );
 		},
 		
