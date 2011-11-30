@@ -478,6 +478,7 @@ table.example td {
 <div id="bothPageCount">/</div>
 </div>
 <div id="bothPaginate"><a href="javascript:;" id="bothSwitchPaginate">Switch Paginate (now:<span id="bothNowPaginate"></span>)</a></div>
+<div><a href="javascript:;" id="toggleDisabled">Toggle flick disabled</a></div>
 <script type="text/javascript">
 (function() {
 	var ind = $('#bothPageCount');
@@ -509,6 +510,10 @@ table.example td {
 		fs.paginate = fs.paginate === 'x' ? 'y' : 'x';
 		$('#bothNowPaginate').html( fs.paginate );
 		fs.goTo( fs.page );
+	});
+
+	$('#toggleDisabled').bind('click', function(e) {
+		fs.disabled = !fs.disabled;
 	});
 })();
 </script>
@@ -755,6 +760,9 @@ $('#flick').flickSimple( {
 <dl>
 <dt>target</dt>
 <dd>動かすエレメントを指定します。省略した場合は、内包している最初の子要素が自動的に指定されます。</dd>
+
+<dt>disabled</dt>
+<dd>trueにするとフリックによるスクロールを無効化します。falseにすると有効になります。falseの場合でも、フリックを無効にするだけなのでmoveとgoToによる移動は可能です。省略した場合のデフォルトはfalseです。</dd>
 
 <dt>snap</dt>
 <dd>ページ区切りの仕方を指定します。以下のものが指定できます。
