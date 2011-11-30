@@ -16,6 +16,7 @@
 	$.extend( $.flickSimple.prototype, {
 		elm: null,
 		target: null,
+		disabled: false,
 		snap: 'element',
 		ratio: 5,
 		duration: 600,
@@ -65,6 +66,7 @@
 			o.webkit = typeof( WebKitTransitionEvent ) !== "undefined";
 			o.touchable = typeof( ontouchstart ) !== "undefined";
 
+			if ( param.disabled  !== void 0 ) o.disabled = param.disabled;
 			if ( param.snap  !== void 0 )     o.snap = param.snap;
 			if ( param.ratio !== void 0 )     o.ratio = param.ratio;
 			if ( param.duration !== void 0 )  o.duration = param.duration;
@@ -244,6 +246,7 @@
 		touchstart: function(e) {
 			var o = this;
 			var te = o.touchable ? event.changedTouches[0] : e;
+			if ( o.disabled ) { return; }
 			o.startX = te.clientX;
 			o.startY = te.clientY;
 			o.touchhold = false;
@@ -274,6 +277,7 @@
 		
 		touchmove: function(e) {
 			var o = this;
+			if ( o.disabled ) { return; }
 			if ( o.android || o.lock ) {
 				e.preventDefault();
 			}
@@ -305,6 +309,7 @@
 	
 		touchend: function(e) {
 			var o = this;
+			if ( o.disabled ) { return; }
 			if ( o.startX === null || o.startY === null ) { return; }
 			o.startX = null;
 			o.startY = null;
