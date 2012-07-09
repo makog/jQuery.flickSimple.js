@@ -150,6 +150,7 @@
 		
 		// 指定されたX座標に移動
 		move: function( posX, posY ) {
+			var o = this;
 			if ( ! this.horizontal || posX >= 0 ) {
 				posX = 0;
 			} else if ( posX < -this.elmWidth ) {
@@ -162,7 +163,12 @@
 			}
 
 			if ( this.android || ! this.webkit ) {
-				this.target.animate( { left: posX + 'px', top: posY + 'px' } );
+				this.target.animate( { left: posX + 'px', top: posY + 'px' },
+					function (e) {
+						if ( $.isFunction( o.onAnimationEnd ) ) {
+							o.onAnimationEnd(e);
+						}
+					} );
 			} else {
 				this.target.css( {
 					webkitTransition:"-webkit-transform 0.3s ease-in",
@@ -366,7 +372,12 @@
 			
 			if ( o.android || ! o.webkit ) {
 				o.target.animate( { left: nposX + 'px', top: nposY + 'px' }, o.duration,
-					function (x, t, b, c, d) { return -c *(t/=d)*(t-2) + b; } );
+					function (x, t, b, c, d) {
+						if ( $.isFunction( o.onAnimationEnd ) ) {
+							o.onAnimationEnd(e);
+						}
+						return -c *(t/=d)*(t-2) + b;
+					} );
 			} else {
 				o.target.css( {
 					webkitTransition:"-webkit-transform "
