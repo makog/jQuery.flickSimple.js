@@ -302,7 +302,7 @@
 			o.nextX = o.horizontal ? (o.currentX || 0) + ( nowX - o.startX ) : 0;
 			o.nextY = o.vertical ? (o.currentY || 0) + ( nowY - o.startY ) : 0;
 			if ( o.android || ! o.webkit ) {
-				o.target.css( { left: o.nextX + 'px', top: o.nextY } );
+				o.target.css( { left: o.nextX + 'px', top: o.nextY + 'px' } );
 			} else {
 				o.target.css( {
 					webkitTransition:"none",
