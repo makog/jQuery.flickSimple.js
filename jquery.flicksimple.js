@@ -1,5 +1,5 @@
 /**
- * jQuery.flickSimple v1.2.0
+ * jQuery.flickSimple v1.2.1
  *
  * Copyright (c) 2011 Makog. http://d.hatena.ne.jp/makog/
  * Dual licensed under the MIT and GPL licenses:
