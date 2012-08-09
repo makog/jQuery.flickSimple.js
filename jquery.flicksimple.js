@@ -37,6 +37,7 @@
 		pageLength: 0,
 		android: false,
 		webkit: true,
+		use3d: true,
 		touchable: true,
 		anc: null,
 		touchhold: false,
@@ -64,6 +65,7 @@
 				? navigator.userAgent.indexOf('Android') !== -1
 				: param.android;
 			o.webkit = typeof( WebKitTransitionEvent ) !== "undefined";
+			o.use3d = ( o.webkit && ! o.android );
 			o.touchable = typeof( ontouchstart ) !== "undefined";
 
 			if ( param.disabled  !== void 0 ) o.disabled = param.disabled;
@@ -87,13 +89,13 @@
 			}
 			o.init();
 
-			if ( o.android || ! o.webkit ) {
+			if ( ! o.webkit ) {
 				o.target.css({ position:'relative' });
 			} else {
 				o.target.css({
-					position:'relative',
-					webkitTransition:'none',
-					webkitTransform:'translate3d(0,0,0)'
+					position: 'relative',
+					webkitTransition: 'none',
+					webkitTransform: (o.use3d ? 'translate3d(0,0,0)' : 'translate(0,0)')
 				});
 			}
 			o.updateSize();
@@ -151,33 +153,35 @@
 		// 指定されたX座標に移動
 		move: function( posX, posY ) {
 			var o = this;
-			if ( ! this.horizontal || posX >= 0 ) {
+			if ( ! o.horizontal || posX >= 0 ) {
 				posX = 0;
-			} else if ( posX < -this.elmWidth ) {
-				posX = -this.elmWidth;
+			} else if ( posX < -o.elmWidth ) {
+				posX = -o.elmWidth;
 			}
-			if ( ! this.vertical || posY >= 0 ) {
+			if ( ! o.vertical || posY >= 0 ) {
 				posY = 0;
-			} else if ( posY < -this.elmHeight ) {
-				posY = -this.elmHeight;
+			} else if ( posY < -o.elmHeight ) {
+				posY = -o.elmHeight;
 			}
 
-			if ( this.android || ! this.webkit ) {
-				this.target.animate( { left: posX + 'px', top: posY + 'px' },
+			if ( ! o.webkit ) {
+				o.target.animate( { left: posX + 'px', top: posY + 'px' },
 					function (e) {
 						if ( $.isFunction( o.onAnimationEnd ) ) {
 							o.onAnimationEnd(e);
 						}
 					} );
 			} else {
-				this.target.css( {
-					webkitTransition:"-webkit-transform 0.3s ease-in",
-					webkitTransform:"translate3d(" + posX + "px," + posY + "px,0)"
+				o.target.css( {
+					webkitTransition: '-webkit-transform 0.3s ease-in',
+					webkitTransform: ( o.use3d
+						? 'translate3d(' + posX + 'px,' + posY + 'px,0)'
+						: 'translate(' + posX + 'px,' + posY + 'px)' )
 				} );
 			}
-			this.nextX = posX;
-			this.nextY = posY;
-			return this.update( posX, posY );
+			o.nextX = posX;
+			o.nextY = posY;
+			return o.update( posX, posY );
 		},
 		
 		// 表示が変更されたら、各エレメントの大きさを計算し直す
@@ -301,12 +305,14 @@
 			}
 			o.nextX = o.horizontal ? (o.currentX || 0) + ( nowX - o.startX ) : 0;
 			o.nextY = o.vertical ? (o.currentY || 0) + ( nowY - o.startY ) : 0;
-			if ( o.android || ! o.webkit ) {
+			if ( ! o.webkit ) {
 				o.target.css( { left: o.nextX + 'px', top: o.nextY + 'px' } );
 			} else {
 				o.target.css( {
-					webkitTransition:"none",
-					webkitTransform:"translate3d("+o.nextX+"px,"+o.nextY+"px,0)"
+					webkitTransition: "none",
+					webkitTransform: ( o.use3d
+						? 'translate3d(' + o.nextX + 'px,' + o.nextY + 'px,0)'
+						: 'translate(' + o.nextX + 'px,' + o.nextY + 'px)' )
 				} );
 			}
 			o.flickX = o.preX - nowX;
@@ -370,7 +376,7 @@
 			}
 		
 			
-			if ( o.android || ! o.webkit ) {
+			if ( ! o.webkit ) {
 				o.target.animate( { left: nposX + 'px', top: nposY + 'px' }, o.duration,
 					function (x, t, b, c, d) {
 						if ( $.isFunction( o.onAnimationEnd ) ) {
@@ -382,8 +388,10 @@
 				o.target.css( {
 					webkitTransition:"-webkit-transform "
 						+ (o.duration / 1000) + "s ease-out",
-					webkitTransform:"translate3d("+nposX+"px,"+nposY+"px,0)"
-				} );
+					webkitTransform: ( o.use3d
+						? 'translate3d(' + nposX + 'px,' + nposY + 'px,0)'
+						: 'translate(' + nposX + 'px,' + nposY + 'px)' )
+				} );				
 			}
 			o.update( nposX, nposY );
 		},
