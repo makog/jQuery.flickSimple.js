@@ -251,7 +251,9 @@
 			if ( $.isFunction(o.onResize) ) {
 				o.onResize();
 			}
-			o.goTo( o.page );
+			if ( o.snap ) {
+				o.goTo( o.page );
+			}
 			return o;
 		},
 
