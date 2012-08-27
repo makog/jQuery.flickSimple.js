@@ -1,5 +1,5 @@
 /**
- * jQuery.flickSimple v1.2.1
+ * jQuery.flickSimple v1.2.2
  *
  * Copyright (c) 2011 Makog. http://d.hatena.ne.jp/makog/
  * Dual licensed under the MIT and GPL licenses:
@@ -12,7 +12,7 @@
 	$.flickSimple = function( obj, param ) {
 		this.setup( $(obj), param );
 	};
-	
+
 	$.extend( $.flickSimple.prototype, {
 		elm: null,
 		target: null,
@@ -28,20 +28,41 @@
 		vertical: false,
 		horizontal: true,
 		paginate: 'x',
-	
+
 		elmWidth: 0,
 		elmHeight: 0,
 		page: 1,
 		pageWidth: 0,
 		pageHeight: 0,
 		pageLength: 0,
+
 		android: false,
-		webkit: true,
+		touchable: ( typeof ontouchstart !== 'undefined' ),
+		vender: (function() {
+			var props = [
+				[ '-webkit-transition', '-webkit-transition', '-webkit-transform', 'webkitTransitionEnd' ],
+				[ 'MozTransition',      '-moz-transition',    '-moz-transform',    'transitionend' ],
+				[ 'OTransition',        '-o-transition',      '-o-transform',      'oTransitionEnd' ],
+				[ '-ms-transition',     '-ms-transition',     '-ms-transform',     'msTransitionEnd' ],
+				[ 'transition',         'transition',         'transform',         'transitionEnd' ],
+			];
+			var div = document.createElement('div');
+			var vender = {};
+			for( var i=0,len=props.length; i<len; i++ ) {
+				if ( div.style[props[i][0]] !== void 0 ) {
+					vender.transition    = props[i][1];
+					vender.transform     = props[i][2];
+					vender.transitionend = props[i][3];
+					break;
+				}
+			}
+			return vender;
+		})(),
+		useCSSAnim: true,
 		use3d: true,
-		touchable: true,
+
 		anc: null,
 		touchhold: false,
-		
 		startX: null,
 		startY: null,
 		preX: 0,
@@ -52,30 +73,35 @@
 		flickY: 0,
 		nextX: 0,
 		nextY: 0,
-		debug: null,
+		// debug: null,
 
 		setup: function( obj, param ) {
 			var o = this;
-			o.debug = $('#debug');
+		//	o.debug = $('#debug');
 			o.elm = obj;
 			o.elm.css( { overflow: 'hidden' } );
 			o.target = param.target || $(o.elm.children().get(0));
 			
+			var ua = navigator.userAgent.toLowerCase();
 			o.android = param.android === void 0
-				? navigator.userAgent.indexOf('Android') !== -1
+				? ua.indexOf('android') !== -1
 				: param.android;
-			o.webkit = typeof( WebKitTransitionEvent ) !== "undefined";
-			o.use3d = ( o.webkit && ! o.android );
-			o.touchable = typeof( ontouchstart ) !== "undefined";
 
-			if ( param.disabled  !== void 0 ) o.disabled = param.disabled;
-			if ( param.snap  !== void 0 )     o.snap = param.snap;
-			if ( param.ratio !== void 0 )     o.ratio = param.ratio;
-			if ( param.duration !== void 0 )  o.duration = param.duration;
-			if ( param.lock !== void 0 )      o.lock = param.lock;
-			if ( param.vertical !== void 0 )  o.vertical = param.vertical;
-			if ( param.horizontal !== void 0) o.horizontal = param.horizontal;
-			if ( param.paginate !== void 0 )  o.paginate = param.paginate;
+			o.useCSSAnim = o.vender.transition && o.vender.transform;
+			o.use3d = ( typeof WebKitCSSMatrix !== 'undefined'
+				&& ( ua.indexOf('chrome') !== -1 || ! o.android ) );
+
+			if ( param.disabled  !== void 0 )  o.disabled = param.disabled;
+			if ( param.snap  !== void 0 )      o.snap = param.snap;
+			if ( param.ratio !== void 0 )      o.ratio = param.ratio;
+			if ( param.duration !== void 0 )   o.duration = param.duration;
+			if ( param.lock !== void 0 )       o.lock = param.lock;
+			if ( param.vertical !== void 0 )   o.vertical = param.vertical;
+			if ( param.horizontal !== void 0)  o.horizontal = param.horizontal;
+			if ( param.paginate !== void 0 )   o.paginate = param.paginate;
+
+			if ( param.vender !== void 0 )     o.vender = param.vender;
+			if ( param.useCSSAnim !== void 0 ) o.useCSSAnim = param.useCSSAnim;
 
 			o.onChange       = param.onChange;
 			o.onResize       = param.onResize;
@@ -89,14 +115,14 @@
 			}
 			o.init();
 
-			if ( ! o.webkit ) {
+			if ( ! o.useCSSAnim ) {
 				o.target.css({ position:'relative' });
 			} else {
-				o.target.css({
-					position: 'relative',
-					webkitTransition: 'none',
-					webkitTransform: (o.use3d ? 'translate3d(0,0,0)' : 'translate(0,0)')
-				});
+				var css = {};
+				css['position'] = 'relative';
+				css[o.vender.transition] = 'none';
+				css[o.vender.transform] = o.use3d ? 'translate3d(0,0,0)' : 'translate(0,0)';
+				o.target.css(css);
 			}
 			o.updateSize();
 			
@@ -110,11 +136,13 @@
 					.bind( 'mousemove', function(e){ o.touchmove(e) } );
 			}
 
-			o.target.bind( 'webkitTransitionEnd', function(e) {
-				if ( $.isFunction( o.onAnimationEnd ) ) {
-					o.onAnimationEnd(e);
-				}
-			} );
+			if ( o.vender.transitionend ) {
+				o.target.bind( o.vender.transitionend, function(e) {
+					if ( o.onAnimationEnd ) {
+						o.onAnimationEnd(e);
+					}
+				} );
+			}
 			return o;
 		},
 		
@@ -164,20 +192,20 @@
 				posY = -o.elmHeight;
 			}
 
-			if ( ! o.webkit ) {
+			if ( ! o.useCSSAnim ) {
 				o.target.animate( { left: posX + 'px', top: posY + 'px' },
 					function (e) {
-						if ( $.isFunction( o.onAnimationEnd ) ) {
+						if ( o.onAnimationEnd ) {
 							o.onAnimationEnd(e);
 						}
 					} );
 			} else {
-				o.target.css( {
-					webkitTransition: '-webkit-transform 0.3s ease-in',
-					webkitTransform: ( o.use3d
-						? 'translate3d(' + posX + 'px,' + posY + 'px,0)'
-						: 'translate(' + posX + 'px,' + posY + 'px)' )
-				} );
+				var css = {};
+				css[o.vender.transition] = o.vender.transform + ' 0.3s ease-in';
+				css[o.vender.transform] = o.use3d
+					? 'translate3d(' + posX + 'px,' + posY + 'px,0)'
+					: 'translate(' + posX + 'px,' + posY + 'px)';
+				o.target.css(css);
 			}
 			o.nextX = posX;
 			o.nextY = posY;
@@ -248,7 +276,7 @@
 				}
 			}
 	
-			if ( $.isFunction(o.onResize) ) {
+			if ( o.onResize ) {
 				o.onResize();
 			}
 			if ( o.snap ) {
@@ -259,7 +287,7 @@
 
 		touchstart: function(e) {
 			var o = this;
-			var te = o.touchable ? event.changedTouches[0] : e;
+			var te = o.touchable ? e.originalEvent.touches[0] : e;
 			if ( o.disabled ) { return; }
 			o.startX = te.clientX;
 			o.startY = te.clientY;
@@ -307,15 +335,15 @@
 			}
 			o.nextX = o.horizontal ? (o.currentX || 0) + ( nowX - o.startX ) : 0;
 			o.nextY = o.vertical ? (o.currentY || 0) + ( nowY - o.startY ) : 0;
-			if ( ! o.webkit ) {
+			if ( ! o.useCSSAnim ) {
 				o.target.css( { left: o.nextX + 'px', top: o.nextY + 'px' } );
 			} else {
-				o.target.css( {
-					webkitTransition: "none",
-					webkitTransform: ( o.use3d
-						? 'translate3d(' + o.nextX + 'px,' + o.nextY + 'px,0)'
-						: 'translate(' + o.nextX + 'px,' + o.nextY + 'px)' )
-				} );
+				var css = {};
+				css[o.vender.transition] = 'none';
+				css[o.vender.transform] = o.use3d
+					? 'translate3d(' + o.nextX + 'px,' + o.nextY + 'px,0)'
+					: 'translate(' + o.nextX + 'px,' + o.nextY + 'px)';
+				o.target.css( css );
 			}
 			o.flickX = o.preX - nowX;
 			o.flickY = o.preY - nowY;
@@ -325,12 +353,11 @@
 	
 		touchend: function(e) {
 			var o = this;
-			if ( o.disabled ) { return; }
-			if ( o.startX === null || o.startY === null ) { return; }
+			if ( o.disabled || o.startX === null || o.startY === null ) { return; }
 			o.startX = null;
 			o.startY = null;
 			if ( o.anc && ! o.touchhold ) {
-				if ( $.isFunction( o.onClick ) ) {
+				if ( o.onClick ) {
 					o.onClick( o.anc );
 				}
 				var ancr = o.anc.get(0);
@@ -378,22 +405,22 @@
 			}
 		
 			
-			if ( ! o.webkit ) {
+			if ( ! o.useCSSAnim ) {
 				o.target.animate( { left: nposX + 'px', top: nposY + 'px' }, o.duration,
 					function (x, t, b, c, d) {
-						if ( $.isFunction( o.onAnimationEnd ) ) {
+						if ( o.onAnimationEnd ) {
 							o.onAnimationEnd(e);
 						}
 						return -c *(t/=d)*(t-2) + b;
 					} );
 			} else {
-				o.target.css( {
-					webkitTransition:"-webkit-transform "
-						+ (o.duration / 1000) + "s ease-out",
-					webkitTransform: ( o.use3d
-						? 'translate3d(' + nposX + 'px,' + nposY + 'px,0)'
-						: 'translate(' + nposX + 'px,' + nposY + 'px)' )
-				} );				
+				var css = {};
+				css[o.vender.transition] = o.vender.transform
+					+ ' ' + (o.duration / 1000) + "s ease-out";
+				css[o.vender.transform] = o.use3d
+					? 'translate3d(' + nposX + 'px,' + nposY + 'px,0)'
+					: 'translate(' + nposX + 'px,' + nposY + 'px)';
+				o.target.css( css );				
 			}
 			o.update( nposX, nposY );
 		},
@@ -415,7 +442,7 @@
 			if ( o.currentX !== posX || o.currentY !== posY ) {
 				o.currentX = posX;
 				o.currentY = posY;
-				if ( $.isFunction( o.onChange ) ) {
+				if ( o.onChange ) {
 					o.onChange();
 				}
 			}
