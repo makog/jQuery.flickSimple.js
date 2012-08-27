@@ -10,7 +10,7 @@
 <meta name="robots" content="noindex">
 
 <meta http-equiv="Content-Style-Type" content="text/css">
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 <script type="text/javascript" src="jquery.flicksimple.js"></script>
 <style type="text/css">
 body {
@@ -77,24 +77,6 @@ table.example td {
 	height: 3em;
 	border:solid 1px #ccc;
 	text-align: center;
-}
-
-table.browsers {
-	margin: 1em 0;
-	border-collapse: collapse;
-	empty-cells: show;
-	font-size: 86%;
-}
-
-table.browsers th,
-table.browsers td {
-	padding: 0.5em;
-	border: solid 1px #ccc;
-	text-align: center;
-}
-
-table.browsers th {
-	background-color: #eee;
 }
 
 #footer {
@@ -652,7 +634,7 @@ table.browsers th {
 })();
 </script>
 
-<p class="notes">※アイコンは<a href="http://www.tutorial9.net/downloads/nixus-icon-pack-60-beautiful-premium-icons-free/" target="_blank">NIXUS Icon Pack</a>を使わせていただきました。</p>
+<p>※アイコンは<a href="http://www.tutorial9.net/downloads/nixus-icon-pack-60-beautiful-premium-icons-free/" target="_blank">NIXUS Icon Pack</a>を使わせていただきました。</p>
 
 <h2>特徴</h2>
 
@@ -853,66 +835,6 @@ horizontal、verticalが両方 tureの場合の、ページの割り付け方を
 <dt>onClick</dt>
 <dd>targetの子要素にアンカーリンクを含む場合、そのアンカーリンクがクリック（タップ）された際に呼び出されるコールバック関数を指定します。この関数には、第一引数にクリック（タップ）されたエレメントのjQueryオブジェクトが渡されます。</dd>
 
-<dt>useCSSAnim</dt>
-<dd>CSSアニメーションに対応したブラウザの場合には、CSSアニメーションの使用を停止することができます。CSSアニメーションを停止した場合は、jQuery.animate() によってアニメーションが表現されます。<br>
-<table class="browsers">
-<caption>参考）CSSアニメーション対応ブラウザのデフォルト値</caption>
-<tr>
-<th>&nbsp;</th>
-<th>iOS</th>
-<th>Android</th>
-<th>PC</th>
-</tr>
-<tr>
-<th>Safari</th>
-<td>◯<br>-webkit-transform: translate3d()</td>
-<td>-</td>
-<td>◯<br>-webkit-transform: translate3d()</td>
-</tr>
-<tr>
-<th>Chrome</th>
-<td>◯<br>-webkit-transform: translate3d()</td>
-<td>◯<br>-webkit-transform: translate3d()</td>
-<td>◯<br>-webkit-transform: translate3d()</td>
-</tr>
-<tr>
-<th>Android標準ブラウザ</th>
-<td>-</td>
-<td>◯<br>-webkit-transform: translate()</td>
-<td>-</td>
-</tr>
-<tr>
-<th>Firefox</th>
-<td>-</td>
-<td>◯<br>-moz-transform: translate()</td>
-<td>◯<br>-moz-transform: translate()</td>
-</tr>
-<tr>
-<th>Opera</th>
-<td>？</td>
-<td>◯<br>-o-transform: translate()</td>
-<td>◯<br>-o-transform: translate()</td>
-</tr>
-<tr>
-<th>IE (9以降？)</th>
-<td>-</td>
-<td>-</td>
-<td>◯<br>-ms-transform: translate()</td>
-</tr>
-<tr>
-<th>上記以外のWebkitブラウザ</th>
-<td>◯<br>-webkit-transform: translate3d()</td>
-<td>◯<br>-moz-transform: translate()</td>
-<td>◯<br>-webkit-transform: translate3d()</td>
-</tr>
-</table>
-<p class="notes">※どうやら現状のAndroid版Operaは、jQuery.animate()を使用した方がパフォーマンスが良いようですので、このオプションを加えました。<br>
-※「Opera mini」「IE」「上記以外のWebkitブラウザ」は未検証です・・・。</p>
-</dd>
-
-<dt>use3d</dt>
-<dd>CSSアニメーションに「translate3d」を使用するかどうかを指定できます。これに対応しているブラウザでは、おおよそ「translate3d」を使用した方がパフォーマンスが良いようですが、例えば Android 2.x の「Android標準ブラウザ」では、「translate3d」を使用するとおかしな挙動になります。<br>デフォルトは上記の表の通りです。</dd>
-
 </dl>
 
 <h3>Properties</h3>
@@ -970,8 +892,8 @@ horizontal、verticalが両方 tureの場合の、ページの割り付け方を
 <dt>touchable</dt>
 <dd>ブラウザがタッチイベントに対応しているかどうかを取得できます。</dd>
 
-<dt><del>webkit</del></dt>
-<dd>※ver 1.2.2 で廃止しました。</dd>
+<dt>webkit</dt>
+<dd>ブラウザが「WebKitTransitionEvent」に対応しているかどうかを取得します。Androidの場合はこの値が trueになりますが、対応が中途半端なため、動作にCSSアニメーションは使用しないようにしています。</dd>
 
 </dl>
 
@@ -1013,7 +935,7 @@ horizontal、verticalが両方 tureの場合の、ページの割り付け方を
 </dl>
 
 <div id="footer">
-<p>Copyright &copy; 2012 Makog. <a href="http://d.hatena.ne.jp/makog/" target="_blank">http://d.hatena.ne.jp/makog/</a></p>
+<p>Copyright &copy; 2011 Makog. <a href="http://d.hatena.ne.jp/makog/" target="_blank">http://d.hatena.ne.jp/makog/</a></p>
 </div>
 
 </body>
