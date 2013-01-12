@@ -102,6 +102,7 @@
 
 			if ( param.vender !== void 0 )     o.vender = param.vender;
 			if ( param.useCSSAnim !== void 0 ) o.useCSSAnim = param.useCSSAnim;
+			if ( param.use3d !== void 0 )      o.use3d = param.use3d;
 
 			o.onChange       = param.onChange;
 			o.onResize       = param.onResize;
