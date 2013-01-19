@@ -290,8 +290,8 @@
 			var o = this;
 			var te = o.touchable ? e.originalEvent.touches[0] : e;
 			if ( o.disabled ) { return; }
-			o.startX = te.clientX;
-			o.startY = te.clientY;
+			o.startX = o.preX = te.clientX;
+			o.startY = o.preY = te.clientY;
 			o.touchhold = false;
 			var anc = e.target.tagName === 'A'
 				? $(e.target)
