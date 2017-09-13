@@ -1,0 +1,12 @@
+{
+  "name": "jQuery.flickSimple.js",
+  "version": "1.3.0",
+  "description": "PCのブラウザ、Androidにも対応したフリック動作",
+  "dependencies": {"jquery": ""},
+  "main": "jquery.flicksimple.js",
+  "repository": "https://github.com/makog/jQuery.flickSimple.js",
+  "author": "makog (http://d.hatena.ne.jp/makog/)",
+  "license": "(MIT OR GPL)",
+  "keywords": "jquery-plugin",
+  "private": false
+}
