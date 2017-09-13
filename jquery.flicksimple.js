@@ -1,5 +1,5 @@
 /**
- * jQuery.flickSimple v1.2.2
+ * jQuery.flickSimple v1.3.0
  *
  * Copyright (c) 2011 Makog. http://d.hatena.ne.jp/makog/
  * Dual licensed under the MIT and GPL licenses:
@@ -7,7 +7,13 @@
  * http://www.gnu.org/licenses/gpl.html
  *
  */
-(function($, window, document, undefined){
+(function( factory ) {
+  if ( typeof module === "object" && typeof module.exports === "object" ) {
+    module.exports = factory( require( "jquery" ), window, document );
+  } else {
+		factory( jQuery, window, document );
+  }
+} (function( $, window, document, undefined ) {
 
 	$.flickSimple = function( obj, param ) {
 		this.setup( $(obj), param );
@@ -515,5 +521,4 @@
 		}
 		return res;
 	};
-
-})(jQuery, window, document);
+}));
