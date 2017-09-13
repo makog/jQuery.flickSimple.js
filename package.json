@@ -1,5 +1,5 @@
 {
-  "name": "jQuery.flickSimple.js",
+  "name": "jquery-flickSimple",
   "version": "1.3.0",
   "description": "PCのブラウザ、Androidにも対応したフリック動作",
   "dependencies": {"jquery": ""},
