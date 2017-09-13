@@ -7,7 +7,7 @@
  * http://www.gnu.org/licenses/gpl.html
  *
  */
-(function($){
+(function($, window, document, undefined){
 
 	$.flickSimple = function( obj, param ) {
 		this.setup( $(obj), param );
@@ -81,7 +81,7 @@
 			o.elm = obj;
 			o.elm.css( { overflow: 'hidden' } );
 			o.target = param.target || $(o.elm.children().get(0));
-			
+
 			var ua = navigator.userAgent.toLowerCase();
 			o.android = param.android === void 0
 				? ua.indexOf('android') !== -1
@@ -108,7 +108,7 @@
 			o.onResize       = param.onResize;
 			o.onAnimationEnd = param.onAnimationEnd;
 			o.onClick        = param.onClick;
-			
+
 			if ( typeof window.onorientationchange === 'object' && ! o.android  ) {
 				$(window).bind( 'orientationchange', function(){ o.updateSize(); } );
 			} else {
@@ -126,7 +126,7 @@
 				o.target.css(css);
 			}
 			o.updateSize();
-			
+
 			if ( o.touchable ) {
 				o.elm.bind( 'touchstart', function(e){ o.touchstart(e) } )
 					.bind( 'touchmove', function(e){ o.touchmove(e) } )
@@ -146,24 +146,24 @@
 			}
 			return o;
 		},
-		
+
 		// 次のページへ移動
 		nextPage: function( num ) {
 			return this.goTo( this.page + (num || 1) );
 		},
-		
+
 		// 前のページへ移動
 		prevPage: function( num ) {
 			return this.goTo( this.page - (num || 1) );
 		},
-		
+
 		// 指定されたページへ移動
 		goTo: function( pagenum ) {
 			if ( pagenum > this.pageLength ) {
 				pagenum = this.pageLength;
 			}
 			pagenum--;
-			
+
 			var pageX, pageY, rownum;
 			if ( this.paginate === 'y' ) {
 				rownum = Math.ceil( this.elmHeight / this.pageHeight ) +1;
@@ -178,7 +178,7 @@
 			var posY = pageY * this.pageHeight;
 			return this.move( -posX, -posY );
 		},
-		
+
 		// 指定されたX座標に移動
 		move: function( posX, posY ) {
 			var o = this;
@@ -212,7 +212,7 @@
 			o.nextY = posY;
 			return o.update( posX, posY );
 		},
-		
+
 		// 表示が変更されたら、各エレメントの大きさを計算し直す
 		updateSize: function() {
 			var o = this;
@@ -221,12 +221,12 @@
 				: ( window.innerWidth < window.innerHeight ? 'portrait' : 'landscape' );
 			// var lis = o.target.find('li');
 			var lis = o.target.children();
-	
+
 			o.elm.removeClass('landscape portrait').addClass( ori );
 			// うまく反映されない場合があるので、エレメント自体にclassを振る
 			o.target.removeClass('landscape portrait').addClass( ori );
 			lis.removeClass('landscape portrait').addClass( ori );
-	
+
 			var targw = o.target.width();
 			var targh = o.target.height();
 			var elmw = o.elm.width();
@@ -253,7 +253,7 @@
 						}
 					} );
 					o.pageWidth = smaller;
-					
+
 					smaller = 0;
 					lis.each( function() {
 						var h = $(this).height();
@@ -262,7 +262,7 @@
 						}
 					} );
 					o.pageHeight = smaller;
-		
+
 				} else if ( typeof o.snap === 'object' ) {
 					o.pageWidth = o.snap[0];
 					o.pageHeight = o.snap[1];
@@ -270,13 +270,13 @@
 					o.pageWidth = o.snap;
 					o.pageHeight = o.snap;
 				}
-				
+
 				o.pageLength = Math.ceil( targw / o.pageWidth );
 				if ( targh > o.pageHeight ) {
 					o.pageLength *= Math.ceil( targh / o.pageHeight );
 				}
 			}
-	
+
 			if ( o.onResize ) {
 				o.onResize();
 			}
@@ -299,7 +299,7 @@
 			if ( anc.length > 0 ) {
 				o.anc = anc;
 			}
-	
+
 			// 長押し対応
 			setTimeout( function() {
 				if ( o.anc ) {
@@ -313,11 +313,11 @@
 							anc && anc.attr('href', 'javascript:;');
 						}, 200 );
 					}
-					
+
 				}
 			}, 600 );
 		},
-		
+
 		touchmove: function(e) {
 			var o = this;
 			if ( o.disabled ) { return; }
@@ -351,7 +351,7 @@
 			o.preX = nowX;
 			o.preY = nowY;
 		},
-	
+
 		touchend: function(e) {
 			var o = this;
 			if ( o.disabled || o.startX === null || o.startY === null ) { return; }
@@ -404,8 +404,8 @@
 			} else if ( nposY < -o.elmHeight ) {
 				nposY = -o.elmHeight;
 			}
-		
-			
+
+
 			if ( ! o.useCSSAnim ) {
 				o.target.animate( { left: nposX + 'px', top: nposY + 'px' }, o.duration,
 					function (x, t, b, c, d) {
@@ -421,11 +421,11 @@
 				css[o.vender.transform] = o.use3d
 					? 'translate3d(' + nposX + 'px,' + nposY + 'px,0)'
 					: 'translate(' + nposX + 'px,' + nposY + 'px)';
-				o.target.css( css );				
+				o.target.css( css );
 			}
 			o.update( nposX, nposY );
 		},
-		
+
 		update: function( posX, posY ) {
 			var o = this;
 			if ( o.pageWidth || o.pageHeight ) {
@@ -449,11 +449,11 @@
 			}
 			return o;
 		},
-		
+
 		no_mousedown: function(e) {
 			e.preventDefault();
 		},
-		
+
 		// 初期化（内容に変更があった場合には、呼び出すこと）
 		init: function() {
 			var o = this;
@@ -471,7 +471,7 @@
 						.bind( 'mousedown', o.no_mousedown );
 				}
 			} );
-			
+
 			// 画像のドラッグをさせない
 			if ( ! o.touchable ) {
 				o.target.find('img')
@@ -516,4 +516,4 @@
 		return res;
 	};
 
-})(jQuery);
+})(jQuery, window, document);
